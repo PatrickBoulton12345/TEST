@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Graduate Journey | LFG</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #000000;
+            --orange: #FE5500;
+            --yellow: #EE9944;
+            --blue: #79CAC4;
+            --cream: #EBE3D0;
+            --red: #DC2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--cream);
+            border: 4px solid var(--black);
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 8px 8px 0 var(--black);
+        }
+
+        .game-header {
+            background: var(--black);
+            color: var(--cream);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .game-header h1 {
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+
+        .step-indicator {
+            background: var(--orange);
+            color: var(--black);
+            padding: 6px 14px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .game-content {
+            padding: 40px 30px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .step-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--black);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .step-title.red {
+            color: var(--red);
+        }
+
+        .step-description {
+            font-size: 1.1rem;
+            color: var(--black);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .option-btn {
+            background: var(--cream);
+            border: 3px solid var(--black);
+            padding: 20px 25px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--black);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .option-btn a {
+            color: var(--black);
+        }
+
+        .option-btn:hover {
+            background: var(--yellow);
+            transform: translate(-3px, -3px);
+            box-shadow: 6px 6px 0 var(--black);
+        }
+
+        .option-btn:active {
+            transform: translate(0, 0);
+            box-shadow: none;
+        }
+
+        .option-btn:focus {
+            outline: none;
+        }
+
+        .option-btn.selected {
+            background: var(--orange);
+            transform: translate(-3px, -3px);
+            box-shadow: 6px 6px 0 var(--black);
+        }
+
+        @media (hover: none) {
+            .option-btn:hover {
+                background: var(--cream);
+                transform: none;
+                box-shadow: none;
+            }
+            .option-btn.selected {
+                background: var(--orange);
+                transform: translate(-3px, -3px);
+                box-shadow: 6px 6px 0 var(--black);
+            }
+        }
+
+        .continue-btn {
+            background: var(--orange);
+            border: 3px solid var(--black);
+            color: var(--black);
+            padding: 18px 35px;
+            padding-right: 50px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-top: 20px;
+            align-self: flex-start;
+            position: relative;
+        }
+
+        .continue-btn:hover {
+            background: var(--yellow);
+            transform: translate(-3px, -3px);
+            box-shadow: 6px 6px 0 var(--black);
+        }
+
+        .result-box {
+            background: var(--blue);
+            border: 3px solid var(--black);
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .result-box.negative {
+            background: #ff6b6b;
+        }
+
+        .result-box.positive {
+            background: var(--blue);
+        }
+
+        .result-box.warning {
+            background: var(--orange);
+        }
+
+        .result-box p {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--black);
+        }
+
+        .result-box.warning .player-name,
+        .result-box.negative .player-name {
+            color: white;
+        }
+
+        .stats-tracker {
+            background: var(--black);
+            color: var(--cream);
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 3px solid var(--black);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .debt-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .debt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #444;
+            margin-bottom: 4px;
+        }
+
+        .debt-total {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--orange);
+        }
+
+        .debt-breakdown {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        .debt-item {
+            display: flex;
+            gap: 8px;
+        }
+
+        .debt-label {
+            color: #888;
+        }
+
+        .debt-value {
+            color: var(--yellow);
+            font-weight: 700;
+        }
+
+        .optimism-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .optimism-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .optimism-bar-bg {
+            flex: 1;
+            height: 20px;
+            background: #333;
+            border: 2px solid var(--cream);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .optimism-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--red) 0%, var(--yellow) 50%, var(--blue) 100%);
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .optimism-bar-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--cream);
+        }
+
+        .optimism-percent {
+            font-weight: 900;
+            font-size: 0.9rem;
+            min-width: 45px;
+            text-align: right;
+        }
+
+        /* Debt increase animation */
+        .debt-flash {
+            animation: debtPulse 0.5s ease;
+        }
+
+        @keyframes debtPulse {
+            0%, 100% { color: var(--orange); }
+            50% { color: var(--red); transform: scale(1.1); }
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .popup {
+            background: var(--orange);
+            border: 4px solid var(--black);
+            padding: 40px;
+            max-width: 500px;
+            box-shadow: 10px 10px 0 var(--black);
+        }
+
+        .popup h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--black);
+        }
+
+        .popup p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--black);
+            margin-bottom: 20px;
+        }
+
+        .source-link {
+            color: var(--black);
+            text-decoration: underline;
+            font-weight: 700;
+        }
+
+        .emoji-large {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .final-message {
+            background: var(--black);
+            color: var(--cream);
+            padding: 30px;
+            margin-top: 20px;
+            border: 3px solid var(--orange);
+        }
+
+        .final-message h3 {
+            color: var(--orange);
+            margin-bottom: 15px;
+        }
+
+        .final-message .player-name {
+            color: var(--orange);
+        }
+
+        .petition-link {
+            display: inline-block;
+            background: var(--orange);
+            color: var(--black);
+            padding: 12px 25px;
+            font-weight: 900;
+            text-decoration: none;
+            margin-top: 15px;
+            border: 2px solid var(--black);
+        }
+
+        .petition-link:hover {
+            background: var(--yellow);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .intro-screen {
+            text-align: center;
+            padding: 60px 30px;
+        }
+
+        .intro-screen h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--black);
+        }
+
+        .intro-screen p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--black);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .name-input-container {
+            margin: 30px 0;
+        }
+
+        .name-input {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.2rem;
+            padding: 15px 25px;
+            border: 3px solid var(--black);
+            background: white;
+            color: var(--black);
+            text-align: center;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+
+        .name-input:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 var(--black);
+        }
+
+        .start-btn {
+            background: var(--orange);
+            border: 4px solid var(--black);
+            color: var(--black);
+            padding: 20px 50px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .start-btn:hover {
+            background: var(--yellow);
+            transform: translate(-4px, -4px);
+            box-shadow: 8px 8px 0 var(--black);
+        }
+
+        .start-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .player-name {
+            color: var(--orange);
+            font-weight: 900;
+        }
+
+
+        /* Bouncing arrow for clickable options */
+        .with-arrow {
+            padding-right: 55px;
+        }
+
+        .bounce-arrow {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            font-size: 1.3rem;
+            font-weight: 900;
+            animation: bounceArrow 1s ease-in-out infinite;
+        }
+
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateY(-50%) translateX(0); }
+            50% { transform: translateY(-50%) translateX(-10px); }
+        }
+
+        /* Regional unemployment box */
+        .unemployment-box {
+            background: var(--cream);
+            border: 3px solid var(--black);
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .unemployment-box h3 {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--black);
+            margin-bottom: 5px;
+        }
+
+        .unemployment-box .ub-subtitle {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .region-select {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--black);
+            background: white;
+            border: 3px solid var(--black);
+            padding: 12px 15px;
+            width: 100%;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23000' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+        }
+
+        .region-select:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 var(--black);
+        }
+
+        .region-result {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .region-result.visible {
+            display: block;
+        }
+
+        .region-rate {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--orange);
+            line-height: 1;
+        }
+
+        .region-rate-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .region-change {
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            margin-top: 8px;
+        }
+
+        .region-change.up {
+            background: var(--orange);
+            color: var(--black);
+        }
+
+        .region-change.down {
+            background: var(--blue);
+            color: var(--black);
+        }
+
+        .region-source {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 12px;
+        }
+
+        .region-source a {
+            color: #999;
+        }
+
+        /* ============================================
+           PETITION EMBED STYLES
+           ============================================ */
+        .lfg-petition * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lfg-petition {
+            font-family: 'DM Sans', sans-serif;
+            background: white;
+            border: 3px solid var(--black);
+            padding: 24px;
+            max-width: 100%;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .lfg-petition h2 {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--black);
+            margin-bottom: 20px;
+        }
+
+        .lfg-progress { margin-bottom: 16px; }
+        .lfg-progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .lfg-progress-count { font-size: 24px; font-weight: bold; color: var(--black); }
+        .lfg-progress-goal { font-size: 18px; color: #4b5563; }
+        .lfg-progress-bar {
+            width: 100%;
+            background: #e5e7eb;
+            border-radius: 9999px;
+            height: 12px;
+            overflow: hidden;
+        }
+        .lfg-progress-fill {
+            background: var(--orange);
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 500ms ease-out;
+            width: 0%;
+        }
+        .lfg-progress-label { font-size: 14px; color: #4b5563; margin-top: 8px; }
+
+        .lfg-divider {
+            border: none;
+            border-top: 1px solid #d1d5db;
+            margin: 16px 0;
+        }
+
+        .lfg-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+        .lfg-field label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--black);
+            line-height: 1;
+        }
+        .lfg-field input[type="text"],
+        .lfg-field input[type="email"] {
+            height: 36px;
+            width: 100%;
+            border-radius: 0;
+            border: 2px solid var(--black);
+            padding: 4px 12px;
+            font-size: 16px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: transparent;
+            color: var(--black);
+        }
+        .lfg-field input:focus {
+            border-color: var(--orange);
+            box-shadow: 3px 3px 0 var(--black);
+        }
+        .lfg-field input.lfg-error { border-color: var(--red); }
+        .lfg-error-text { color: var(--red); font-size: 14px; }
+
+        .lfg-submit-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .lfg-submit-error p { color: #991b1b; font-size: 14px; }
+
+        .lfg-radios {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .lfg-radios > label:first-child {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--black);
+            margin-bottom: 4px;
+        }
+        .lfg-radio-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .lfg-radio-option input[type="radio"] {
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--orange);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .lfg-radio-option span { font-size: 14px; line-height: 20px; }
+
+        .lfg-warning {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            padding: 16px;
+            margin-top: 8px;
+            display: none;
+        }
+        .lfg-warning.visible { display: block; }
+        .lfg-warning h3 { font-size: 16px; font-weight: bold; color: #92400e; margin-bottom: 8px; }
+        .lfg-warning p { font-size: 14px; color: #78350f; line-height: 20px; margin-bottom: 8px; }
+        .lfg-warning p:last-child { font-weight: bold; margin-bottom: 0; }
+
+        .lfg-submit-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .lfg-submit-btn {
+            background: var(--black);
+            color: white;
+            border-top: 2px solid var(--orange);
+            border-bottom: 6px solid var(--orange);
+            border-left: 2px solid var(--orange);
+            border-right: 6px solid var(--orange);
+            padding: 10px 64px;
+            font-weight: bold;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lfg-submit-btn:hover {
+            background: var(--orange);
+            color: var(--black);
+            border-color: var(--black);
+        }
+        .lfg-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .lfg-privacy {
+            font-size: 12px;
+            font-style: italic;
+            color: #4b5563;
+            line-height: 16px;
+            text-align: center;
+        }
+        .lfg-privacy a { text-decoration: underline; color: var(--black); transition: color 0.2s; }
+        .lfg-privacy a:hover { color: var(--orange); }
+
+        /* Success Modal */
+        .lfg-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .lfg-modal-overlay.visible { display: flex; }
+        .lfg-modal {
+            background: white;
+            border: 3px solid var(--black);
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 8px 8px 0 var(--black);
+            position: relative;
+        }
+        .lfg-modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .lfg-modal-close:hover { background: #f3f4f6; }
+        .lfg-modal h2 { font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 16px; margin-top: 8px; }
+        .lfg-modal p { text-align: center; margin-bottom: 16px; font-size: 16px; color: var(--black); }
+        .lfg-modal .lfg-share-title { font-weight: bold; font-size: 18px; margin-bottom: 16px; }
+
+        .lfg-share-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .lfg-share-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .lfg-share-btn:hover { opacity: 0.8; }
+        .lfg-share-btn.facebook { background: #1877f2; }
+        .lfg-share-btn.twitter { background: #000; }
+        .lfg-share-btn.instagram { background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af); }
+
+        .lfg-copy-section { margin-bottom: 24px; }
+        .lfg-copy-section p { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .lfg-copy-row { display: flex; gap: 8px; align-items: center; }
+        .lfg-copy-row input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid var(--black);
+            font-size: 14px;
+            background: #f9fafb;
+            font-family: monospace;
+            color: var(--black);
+        }
+        .lfg-copy-btn {
+            padding: 8px 16px;
+            background: var(--orange);
+            color: var(--black);
+            border: 2px solid var(--black);
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .lfg-copy-btn:hover { opacity: 0.8; }
+
+        .lfg-modal-divider {
+            border: none;
+            border-top: 1px solid var(--black);
+            margin: 16px 0;
+        }
+        .lfg-donate-btn {
+            display: inline-block;
+            background: var(--orange);
+            color: var(--black);
+            font-weight: bold;
+            padding: 8px 24px;
+            text-decoration: none;
+            border: 2px solid var(--black);
+            font-size: 16px;
+        }
+        .lfg-donate-wrap { display: flex; justify-content: center; }
+
+        /* Honeypot anti-spam — hidden from real users */
+        .lfg-hp { position: absolute; left: -9999px; opacity: 0; height: 0; width: 0; overflow: hidden; }
+
+        @media (max-width: 600px) {
+            .game-container {
+                margin: 10px;
+            }
+
+            .step-title {
+                font-size: 1.4rem;
+            }
+
+            .game-content {
+                padding: 25px 20px;
+                min-height: auto;
+            }
+
+            .debt-breakdown {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .popup {
+                margin: 15px;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container" id="gameContainer">
+        <!-- Intro Screen -->
+        <div id="introScreen" class="intro-screen">
+            <h1>The Graduate Journey</h1>
+            <p>Navigate the treacherous path from A-Levels to employment in modern Britain. Will you survive?</p>
+            <div class="name-input-container">
+                <input type="text" class="name-input" id="playerNameInput" placeholder="Enter your name..." maxlength="20">
+            </div>
+            <button class="start-btn" id="startBtn" onclick="startGame()" disabled>Begin Your Journey</button>
+        </div>
+
+        <!-- Game Screen (hidden initially) -->
+        <div id="gameScreen" class="hidden">
+            <div class="game-header">
+                <h1>The Graduate Journey</h1>
+                <span class="step-indicator" id="stepIndicator">Step 1</span>
+            </div>
+            <div class="game-content" id="gameContent">
+                <!-- Content will be dynamically inserted -->
+            </div>
+            <div class="stats-tracker">
+                <div class="debt-section">
+                    <div class="debt-header">
+                        <span>Student Debt</span>
+                        <span class="debt-total" id="debtTotal">£0</span>
+                    </div>
+                    <div class="debt-breakdown">
+                        <div class="debt-item">
+                            <span class="debt-label">Interest added (4.3%):</span>
+                            <span class="debt-value" id="interestDisplay">£0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="optimism-container">
+                        <span class="optimism-label">Optimism:</span>
+                        <div class="optimism-bar-bg">
+                            <div class="optimism-bar-fill" id="optimismBarFill" style="width: 100%;"></div>
+                        </div>
+                        <span class="optimism-percent" id="optimismPercent">100%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup for LEO data message -->
+    <div id="leoPopup" class="popup-overlay hidden">
+        <div class="popup">
+            <h3>Data Withheld</h3>
+            <p>The Government knows what every student will likely be earning in the future.<br><br>They know this because of the 'LEO' records which links earnings and education.<br><br>They refuse to publish this to the public.</p>
+            <button class="continue-btn" onclick="closeLeoPopup()">Continue</button>
+        </div>
+    </div>
+
+    <!-- Petition Success Modal -->
+    <div class="lfg-modal-overlay" id="lfgModal">
+        <div class="lfg-modal" onclick="event.stopPropagation()">
+            <button class="lfg-modal-close" id="lfgModalClose">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <h2>Thank You!</h2>
+            <p>Thanks for signing the petition. Please share it to help spread the word and make change happen!</p>
+            <p class="lfg-share-title">Share the petition:</p>
+            <div class="lfg-share-buttons">
+                <a class="lfg-share-btn twitter" id="lfgShareX" href="#" target="_blank" rel="noopener noreferrer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13.3174 10.7749L18.1677 5H17.0112L12.8193 10.0088L9.48911 5H5.5L10.5911 12.2311L5.5 18.3421H6.65645L11.0886 13.0662L14.6098 18.3421H18.5989L13.3171 10.7749H13.3174ZM11.6686 12.3839L11.1464 11.6366L7.0715 5.87016H8.92964L12.2012 10.5747L12.7234 11.322L17.0117 17.5091H15.1536L11.6686 12.3843V12.3839Z"/></svg>
+                    Share on X
+                </a>
+            </div>
+            <div class="lfg-copy-section">
+                <p>Or copy the link:</p>
+                <div class="lfg-copy-row">
+                    <input type="text" id="lfgShareUrl" readonly>
+                    <button class="lfg-copy-btn" id="lfgCopyBtn">Copy</button>
+                </div>
+            </div>
+            <hr class="lfg-modal-divider">
+            <p>If you want to help us really push this issue, please consider donating!</p>
+            <div class="lfg-donate-wrap">
+                <a href="https://lookingforgrowth.uk/donate" class="lfg-donate-btn">Donate</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let optimism = 100;
+        let playerName = '';
+        let triedApplyingAgain = false;
+
+        // Debt ticking system
+        const DEBT_TARGET = 53000;
+        const DEBT_INCREMENT = 22;       // per 50ms tick
+        const TICK_INTERVAL = 50;        // ms
+
+        // Real 4.3% annual interest, compressed into game time.
+        // Debt reaches £53k in ~2,409 ticks, representing 3 years of study.
+        // Each tick = 3 / (53000/22) ≈ 0.001245 years.
+        // Studying rate: 0.043 * 0.001245 ≈ 0.0000536 per tick.
+        // Post-study rate: slowed to 1 year per ~2,409 ticks (1/3 of studying rate).
+        const YEARS_PER_TICK_STUDYING = (3 * DEBT_INCREMENT) / DEBT_TARGET;
+        const STUDYING_INTEREST_PER_TICK = 0.043 * YEARS_PER_TICK_STUDYING;
+        const POST_STUDY_INTEREST_PER_TICK = STUDYING_INTEREST_PER_TICK / 3;
+
+        let currentDebt = 0;
+        let interestAccrued = 0;
+        let debtInterval = null;
+
+        // HTML-escape to prevent XSS via playerName
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Regional youth unemployment data (ONS, Sep-Nov 2025)
+        const unemploymentData = {
+            "North East": { percent: 22.6, change: 0.7 },
+            "London": { percent: 18.8, change: 0.1 },
+            "Yorkshire and The Humber": { percent: 17.6, change: 1.0 },
+            "East Midlands": { percent: 17.1, change: 0.1 },
+            "West Midlands": { percent: 15.9, change: 1.0 },
+            "South East": { percent: 12.5, change: 0.9 },
+            "North West": { percent: 11.6, change: 0.7 },
+            "East of England": { percent: 11.0, change: -3.9 },
+            "South West": { percent: 10.0, change: -0.4 }
+        };
+
+        function getUnemploymentBoxHTML() {
+            const options = Object.keys(unemploymentData)
+                .map(r => `<option value="${r}">${r}</option>`)
+                .join('');
+
+            return `
+                <div class="unemployment-box">
+                    <h3>See your chance of being unemployed where YOU are.</h3>
+                    <p class="ub-subtitle">Ages 18-24 — ONS, Sep-Nov 2025</p>
+                    <select class="region-select" onchange="showRegionRate(this.value)">
+                        <option value="" disabled selected>Select your region</option>
+                        ${options}
+                    </select>
+                    <div class="region-result" id="regionResult">
+                        <span class="region-rate" id="regionRate"></span>
+                        <p class="region-rate-label">young people are unemployed in your region</p>
+                        <span class="region-change" id="regionChange"></span>
+                        <p class="region-source">Source: <a href="https://www.ons.gov.uk/employmentandlabourmarket/peoplenotinwork/unemployment/datasets/regionalunemploymentbyagex02" target="_blank" rel="noopener noreferrer">ONS X02</a> · <a href="https://dashboards.lookingforgrowth.uk/youth-unemployment-dashboard.html" target="_blank" rel="noopener noreferrer">LFG Dashboard</a></p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showRegionRate(region) {
+            const data = unemploymentData[region];
+            if (!data) return;
+
+            const resultEl = document.getElementById('regionResult');
+            const rateEl = document.getElementById('regionRate');
+            const changeEl = document.getElementById('regionChange');
+
+            const inTen = Math.round(data.percent / 10);
+            rateEl.textContent = inTen + ' in 10';
+
+            const isUp = data.change >= 0;
+            const sign = isUp ? '+' : '';
+            changeEl.textContent = data.percent + '% · ' + sign + data.change + 'pp vs last year';
+            changeEl.className = 'region-change ' + (isUp ? 'up' : 'down');
+
+            resultEl.classList.add('visible');
+        }
+
+        // Enable start button when name is entered
+        document.getElementById('playerNameInput').addEventListener('input', function(e) {
+            const startBtn = document.getElementById('startBtn');
+            startBtn.disabled = e.target.value.trim().length === 0;
+        });
+
+        // Allow Enter key to start game
+        document.getElementById('playerNameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && this.value.trim().length > 0) {
+                startGame();
+            }
+        });
+
+        function startDebtTicker() {
+            if (debtInterval) return;
+            debtInterval = setInterval(() => {
+                if (currentDebt < DEBT_TARGET) {
+                    currentDebt = Math.min(currentDebt + DEBT_INCREMENT, DEBT_TARGET);
+                    // While studying: 4.3% annual over 3 years, compressed
+                    interestAccrued += currentDebt * STUDYING_INTEREST_PER_TICK;
+                } else {
+                    // Post-study: 4.3% annual, slower compression (1 year per ~2 min)
+                    interestAccrued += currentDebt * POST_STUDY_INTEREST_PER_TICK;
+                }
+                updateDebtDisplay();
+            }, TICK_INTERVAL);
+        }
+
+        function stopDebtTicker() {
+            if (debtInterval) {
+                clearInterval(debtInterval);
+                debtInterval = null;
+            }
+        }
+
+        function getDisplayDebt() {
+            return Math.round(currentDebt + interestAccrued);
+        }
+
+        function updateOptimism(decrease) {
+            optimism = Math.max(0, optimism - decrease);
+            document.getElementById('optimismBarFill').style.width = `${optimism}%`;
+            document.getElementById('optimismPercent').textContent = `${optimism}%`;
+        }
+
+        function updateDebtDisplay() {
+            const totalEl = document.getElementById('debtTotal');
+            totalEl.textContent = `£${Math.round(currentDebt).toLocaleString()}`;
+
+            const interestEl = document.getElementById('interestDisplay');
+            interestEl.textContent = `£${Math.round(interestAccrued).toLocaleString()}`;
+        }
+
+        function optionClick(btn, callback) {
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            setTimeout(callback, 350);
+        }
+
+        function startGame() {
+            playerName = document.getElementById('playerNameInput').value.trim();
+            document.getElementById('introScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            currentStep = 1;
+            renderStep();
+        }
+
+        function renderStep() {
+            const content = document.getElementById('gameContent');
+            document.getElementById('stepIndicator').textContent = `Step ${currentStep <= 6 ? currentStep : currentStep - 1}`;
+            updateDebtDisplay();
+
+            const stepContent = getStepContent(currentStep);
+            content.innerHTML = stepContent;
+        }
+
+        function getStepContent(step) {
+            switch(step) {
+                case 1:
+                    return `
+                        <h2 class="step-title">A-Levels</h2>
+                        <p class="step-description" id="stepDescription">Well done <span class="player-name">${escapeHtml(playerName)}</span>, you've completed your A-Levels! Your teachers, your school, and the Government are all encouraging you to go to University.</p>
+                        <div id="resultArea"></div>
+                        <div class="options-container" id="optionsContainer">
+                            <button class="option-btn" onclick="optionClick(this, () => goToStep(2))">Continue to University – The Government has promised a £100,000 '<a href="https://www.gov.uk/government/news/graduates-enjoy-100k-earnings-bonus-over-lifetime" target="_blank" rel="noopener noreferrer" class="source-link">graduate bonus</a>'!!</button>
+                        </div>
+                    `;
+                case 2:
+                    return `
+                        <h2 class="step-title">University</h2>
+                        <p class="step-description" id="stepDescription"><span class="player-name">${escapeHtml(playerName)}</span>. You've decided to listen to the Government and your teachers and decided to go to University. How should you choose your course?</p>
+                        <div id="resultArea"></div>
+                        <div class="options-container" id="optionsContainer">
+                            <button class="option-btn with-arrow" onclick="optionClick(this, showLeoPopup)">Research your course: Look at the records which links your course to your future earnings.<span class="bounce-arrow">→</span></button>
+                        </div>
+                    `;
+                case 3:
+                    return `
+                        <h2 class="step-title">You have an essay due…</h2>
+                        <p class="step-description" id="stepDescription"><span class="player-name">${escapeHtml(playerName)}</span>, your first major assignment is approaching. How will you handle it?</p>
+                        <div id="resultArea"></div>
+                        <div class="options-container" id="optionsContainer">
+                            <button class="option-btn" onclick="optionClick(this, () => selectEssayOption(0))">Use AI and turn it in at the last minute</button>
+                            <button class="option-btn" onclick="optionClick(this, () => selectEssayOption(1))">Start it weeks in advance, plan methodically, and submit it on time.</button>
+                        </div>
+                    `;
+                case 4:
+                    return `
+                        <h2 class="step-title">Group Project Time</h2>
+                        <p class="step-description" id="stepDescription"><span class="player-name">${escapeHtml(playerName)}</span>, you have a group project. You've had poor experiences in the past with your classmates refusing to contribute, or contributing with AI generated slop.</p>
+                        <div id="resultArea"></div>
+                        <div class="options-container" id="optionsContainer">
+                            <button class="option-btn" onclick="optionClick(this, () => selectGroupOption(0))">Work with them. Maybe they are different this time.</button>
+                            <button class="option-btn" onclick="optionClick(this, () => selectGroupOption(1))">Just do it yourself</button>
+                        </div>
+                    `;
+                case 5:
+                    return `
+                        <h2 class="step-title">9AM Lecture</h2>
+                        <p class="step-description" id="stepDescription"><span class="player-name">${escapeHtml(playerName)}</span>, you have a 9AM lecture. You are hungover from the night before, and don't really have the energy to go.</p>
+                        <div id="resultArea"></div>
+                        <div class="options-container" id="optionsContainer">
+                            <button class="option-btn" onclick="optionClick(this, () => selectLectureOption(0))">You force yourself to get up. You spend more than £10,000 a year. You might as well go.</button>
+                            <button class="option-btn" onclick="optionClick(this, () => selectLectureOption(1))">Stay home and study at your own pace</button>
+                        </div>
+                    `;
+                case 6:
+                    return `
+                        <h2 class="step-title">🎓 Graduation Day</h2>
+                        <p class="step-description" id="stepDescription">Congratulations <span class="player-name">${escapeHtml(playerName)}</span>! After three long years, you have finally graduated. It's time to make your next move in life.</p>
+                        <div id="resultArea"></div>
+                        <div class="options-container" id="optionsContainer">
+                            <button class="option-btn" onclick="optionClick(this, () => selectGradOption(0))">Apply for a master's degree</button>
+                            <button class="option-btn" onclick="optionClick(this, () => selectGradOption(1))">Enter the world of work</button>
+                        </div>
+                    `;
+                case 8:
+                    return `
+                        <div class="emoji-large">🎉</div>
+                        <h2 class="step-title">You got an interview, ${escapeHtml(playerName)}!</h2>
+                        <p class="step-description" id="stepDescription">Unfortunately, it's eight rounds and you need to talk to an AI agent for 50% of them.</p>
+                        <div class="options-container">
+                            <button class="continue-btn" onclick="goToStep(9)">Begin the interview process <span class="bounce-arrow">→</span></button>
+                        </div>
+                    `;
+                case 9:
+                    return `
+                        <h2 class="step-title red">Rejection</h2>
+                        <p class="step-description" id="stepDescription">Unfortunately, <span class="player-name">${escapeHtml(playerName)}</span>, at the eighth round you have been rejected. Your tie was the wrong colour and the HR representative didn't like it.</p>
+                        <div id="resultArea"></div>
+                        <div class="options-container" id="optionsContainer">
+                            <button class="option-btn" onclick="optionClick(this, handleApplyAgain)">Start applying again</button>
+                            <button class="option-btn" onclick="optionClick(this, handleMoveCountry)">Move country</button>
+                            <button class="option-btn" onclick="optionClick(this, handleUniversalCredit)">Give up and go on Universal Credit</button>
+                        </div>
+                    `;
+                default:
+                    return '';
+            }
+        }
+
+        function showLeoPopup() {
+            document.getElementById('leoPopup').classList.remove('hidden');
+        }
+
+        function closeLeoPopup() {
+            document.getElementById('leoPopup').classList.add('hidden');
+            const desc = document.getElementById('stepDescription');
+            if (desc) {
+                desc.textContent = 'Without clear records, you just have to pick something and hope for the best...';
+            }
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = `
+                <button class="option-btn with-arrow" onclick="optionClick(this, selectUniOption)">Wing it, University is good!<span class="bounce-arrow">→</span></button>
+            `;
+        }
+
+        function selectUniOption() {
+            startDebtTicker();
+            updateOptimism(10);
+
+            const resultArea = document.getElementById('resultArea');
+            resultArea.innerHTML = `
+                <div class="result-box positive">
+                    <p>You're now enrolled. The debt counter has started ticking...</p>
+                </div>
+            `;
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = `<button class="continue-btn" onclick="goToStep(3)">Continue <span class="bounce-arrow">→</span></button>`;
+        }
+
+        function selectEssayOption(option) {
+            const resultArea = document.getElementById('resultArea');
+            const optionsContainer = document.getElementById('optionsContainer');
+
+            updateOptimism(8);
+
+            if (option === 0) {
+                resultArea.innerHTML = `
+                    <div class="result-box positive">
+                        <p>A study conducted at the University of Reading showed that AI beats students in exams.</p>
+                        <p style="margin-top: 10px; font-size: 0.85rem;"><a href="https://www.bbc.co.uk/news/articles/cqqqln0eg65o" target="_blank" rel="noopener noreferrer" class="source-link">Source</a></p>
+                    </div>
+                `;
+            } else {
+                resultArea.innerHTML = `
+                    <div class="result-box negative">
+                        <p>Your classmate who turned in an AI generated essay got a better grade than you.</p>
+                    </div>
+                `;
+            }
+
+            optionsContainer.innerHTML = `<button class="continue-btn" onclick="goToStep(4)">Continue <span class="bounce-arrow">→</span></button>`;
+        }
+
+        function selectGroupOption(option) {
+            const resultArea = document.getElementById('resultArea');
+            const optionsContainer = document.getElementById('optionsContainer');
+
+            updateOptimism(8);
+
+            if (option === 0) {
+                resultArea.innerHTML = `
+                    <div class="result-box negative">
+                        <p>Your classmates barely did their sections, em dashes were everywhere, and they presented by reading from their notes app with the enthusiasm of a damp rag. You got a 2:2 on this project.</p>
+                    </div>
+                `;
+            } else {
+                resultArea.innerHTML = `
+                    <div class="result-box positive">
+                        <p>You delivered your presentation with enthusiasm, asked questions and didn't have unnecessary weight holding you back. You got a first on this project.</p>
+                    </div>
+                `;
+            }
+
+            optionsContainer.innerHTML = `<button class="continue-btn" onclick="goToStep(5)">Continue <span class="bounce-arrow">→</span></button>`;
+        }
+
+        function selectLectureOption(option) {
+            const resultArea = document.getElementById('resultArea');
+            const optionsContainer = document.getElementById('optionsContainer');
+
+            updateOptimism(8);
+
+            if (option === 0) {
+                resultArea.innerHTML = `
+                    <div class="result-box negative">
+                        <p>You roll out of bed, walk in the cold and rain only for the lecturer to read directly from the slides with no further interpretation for nearly two hours.</p>
+                    </div>
+                `;
+            } else {
+                resultArea.innerHTML = `
+                    <div class="result-box positive">
+                        <p>You just read from the slides at home and make notes at your own pace.</p>
+                    </div>
+                `;
+            }
+
+            optionsContainer.innerHTML = `<button class="continue-btn" onclick="goToStep(6)">Continue <span class="bounce-arrow">→</span></button>`;
+        }
+
+        function selectGradOption(option) {
+            const resultArea = document.getElementById('resultArea');
+            const optionsContainer = document.getElementById('optionsContainer');
+
+            if (option === 0) {
+                updateOptimism(10);
+
+                resultArea.innerHTML = `
+                    <div class="result-box warning">
+                        <p>You've added another year of study and £12k to your debt. But now it's really time to enter the workforce...</p>
+                    </div>
+                `;
+                optionsContainer.innerHTML = `<button class="continue-btn" onclick="showWorkMessage()">Now enter the world of work <span class="bounce-arrow">→</span></button>`;
+            } else {
+                showWorkMessage();
+            }
+        }
+
+        function showWorkMessage() {
+            const resultArea = document.getElementById('resultArea');
+            const optionsContainer = document.getElementById('optionsContainer');
+
+            updateOptimism(15);
+
+            // Ensure debt has reached target for this message
+            currentDebt = DEBT_TARGET;
+            updateDebtDisplay();
+
+            resultArea.innerHTML = `
+                <div class="result-box warning">
+                    <p><span class="player-name" style="color: white;">${escapeHtml(playerName)}</span>, you have graduated with £${getDisplayDebt().toLocaleString()} of debt.<br><br>It's time to get into the world of work.<br><br><strong>The odds are stacked against you.</strong><br><br>A report from the <a href="https://ise.org.uk/knowledge/insights/410/record_graduate_job_applications/" target="_blank" rel="noopener noreferrer" class="source-link">ISE</a> showed that 1.2 million people applied for just 17,000 graduate roles in 2024.</p>
+                </div>
+            `;
+            optionsContainer.innerHTML = `<button class="continue-btn" onclick="goToStep(8)">Start applying <span class="bounce-arrow">→</span></button>`;
+        }
+
+        function goToStep(stepNum) {
+            currentStep = stepNum;
+            renderStep();
+        }
+
+
+        function handleApplyAgain() {
+            if (triedApplyingAgain) {
+                return;
+            }
+
+            triedApplyingAgain = true;
+            updateOptimism(20);
+            const content = document.getElementById('gameContent');
+
+            content.innerHTML = `
+                <h2 class="step-title">Back to Square One</h2>
+                <div class="result-box negative">
+                    <p><span class="player-name" style="color: white;">${escapeHtml(playerName)}</span>. You tried again, and after 100 applications you had one interview consisting of ten rounds to be rejected.<br><br>You received no response for 30 and the rest were pre-generated apology emails with no feedback on your application.</p>
+                </div>
+                <div class="options-container">
+                    <button class="option-btn" onclick="optionClick(this, handleMoveCountry)">Move country</button>
+                    <button class="option-btn" onclick="optionClick(this, handleUniversalCredit)">Give up and go on Universal Credit</button>
+                </div>
+            `;
+        }
+
+
+        // ============================================
+        // PETITION EMBED
+        // ============================================
+        var PETITION_LIST_ID = '113';
+        var NEWSLETTER_LIST_ID = '56';
+        var PETITION_NAME = 'petition';
+        var ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/24440311/ursog2a/';
+        var SIGNATURE_API_BASE = 'https://api.lookingforgrowth.uk/api/brevo/get-signatures/';
+        var petitionSignatureCount = null;
+        var petitionModalInitialized = false;
+
+        function getPetitionFormHTML() {
+            return `
+                <div class="lfg-petition" id="lfgPetition">
+                    <h2>Sign the petition</h2>
+                    <div class="lfg-progress" id="lfgProgress" style="display:none;">
+                        <div class="lfg-progress-header">
+                            <span class="lfg-progress-count" id="lfgCount">0</span>
+                            <span class="lfg-progress-goal" id="lfgGoal">Goal: 0</span>
+                        </div>
+                        <div class="lfg-progress-bar">
+                            <div class="lfg-progress-fill" id="lfgFill"></div>
+                        </div>
+                        <p class="lfg-progress-label">signatures</p>
+                    </div>
+                    <hr class="lfg-divider" id="lfgDivider" style="display:none;">
+                    <div class="lfg-submit-error" id="lfgSubmitError" style="display:none;">
+                        <p id="lfgSubmitErrorText"></p>
+                    </div>
+                    <form id="lfgForm" novalidate>
+                        <!-- Honeypot anti-spam field — hidden from real users -->
+                        <div class="lfg-hp" aria-hidden="true">
+                            <label for="lfgWebsite">Website</label>
+                            <input type="text" id="lfgWebsite" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+                        <div class="lfg-field">
+                            <label for="lfgName">name*</label>
+                            <input type="text" id="lfgName" name="name" autocomplete="name">
+                            <span class="lfg-error-text" id="lfgNameError"></span>
+                        </div>
+                        <div class="lfg-field">
+                            <label for="lfgEmail">email*</label>
+                            <input type="email" id="lfgEmail" name="email" autocomplete="email">
+                            <span class="lfg-error-text" id="lfgEmailError"></span>
+                        </div>
+                        <div class="lfg-radios">
+                            <label>I agree to LFG contacting me about important campaigns.*</label>
+                            <label class="lfg-radio-option">
+                                <input type="radio" name="contactConsent" value="yes">
+                                <span>Yes, keep me informed via email.</span>
+                            </label>
+                            <label class="lfg-radio-option">
+                                <input type="radio" name="contactConsent" value="no">
+                                <span>No updates needed, I'm already subscribed or prefer not to be.</span>
+                            </label>
+                            <span class="lfg-error-text" id="lfgConsentError"></span>
+                            <div class="lfg-warning" id="lfgWarning">
+                                <h3>Are you sure?</h3>
+                                <p>If you are not already subscribed that means you won't be able to find out if the campaign is successful or if there's more action we need to take together to win it.</p>
+                                <p>You can unsubscribe at any time.</p>
+                            </div>
+                        </div>
+                        <div class="lfg-submit-wrap">
+                            <button type="submit" class="lfg-submit-btn" id="lfgSubmitBtn">Sign</button>
+                        </div>
+                        <p class="lfg-privacy">
+                            The data collected via this form is processed by LFG in line with our
+                            <a href="https://lfg-site-content.s3.eu-west-2.amazonaws.com/Privacy+Policy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+                        </p>
+                    </form>
+                </div>
+            `;
+        }
+
+        function initPetition() {
+            var form = document.getElementById('lfgForm');
+            var nameInput = document.getElementById('lfgName');
+            var emailInput = document.getElementById('lfgEmail');
+            var nameError = document.getElementById('lfgNameError');
+            var emailError = document.getElementById('lfgEmailError');
+            var consentError = document.getElementById('lfgConsentError');
+            var submitError = document.getElementById('lfgSubmitError');
+            var submitErrorText = document.getElementById('lfgSubmitErrorText');
+            var submitBtn = document.getElementById('lfgSubmitBtn');
+            var warning = document.getElementById('lfgWarning');
+            var progressSection = document.getElementById('lfgProgress');
+            var dividerEl = document.getElementById('lfgDivider');
+            var countEl = document.getElementById('lfgCount');
+            var goalEl = document.getElementById('lfgGoal');
+            var fillEl = document.getElementById('lfgFill');
+
+            if (!form || !nameInput) return;
+
+            // Anti-spam: record when form was rendered
+            var formLoadedAt = Date.now();
+            var honeypotInput = document.getElementById('lfgWebsite');
+
+            // Auto-fill name from game
+            nameInput.value = playerName;
+
+            function calculateGoal(count) {
+                var next = count + 1;
+                if (next <= 500) return Math.max(50, Math.ceil(next / 50) * 50);
+                if (next <= 1500) return Math.ceil(next / 100) * 100;
+                return Math.ceil(next / 250) * 250;
+            }
+
+            function getShareUrl() {
+                var base = window.location.origin + window.location.pathname;
+                return base + '?utm_source=social&utm_medium=share&utm_campaign=petition_share';
+            }
+
+            function getSelectedConsent() {
+                var radios = document.querySelectorAll('input[name="contactConsent"]');
+                for (var i = 0; i < radios.length; i++) {
+                    if (radios[i].checked) return radios[i].value;
+                }
+                return null;
+            }
+
+            function clearErrors() {
+                nameError.textContent = '';
+                emailError.textContent = '';
+                consentError.textContent = '';
+                submitError.style.display = 'none';
+                nameInput.classList.remove('lfg-error');
+                emailInput.classList.remove('lfg-error');
+            }
+
+            function showProgress(count) {
+                var goal = calculateGoal(count);
+                var pct = Math.min((count / goal) * 100, 100);
+                countEl.textContent = count.toLocaleString();
+                goalEl.textContent = 'Goal: ' + goal.toLocaleString();
+                fillEl.style.width = pct + '%';
+                progressSection.style.display = 'block';
+                dividerEl.style.display = 'block';
+            }
+
+            // Fetch signatures
+            if (PETITION_LIST_ID) {
+                fetch(SIGNATURE_API_BASE + PETITION_LIST_ID)
+                    .then(function(res) {
+                        if (!res.ok) throw new Error('HTTP ' + res.status);
+                        return res.json();
+                    })
+                    .then(function(data) {
+                        petitionSignatureCount = data.uniqueSubscribers || 0;
+                        if (petitionSignatureCount >= 25) showProgress(petitionSignatureCount);
+                    })
+                    .catch(function() {});
+            }
+
+            function validate() {
+                var valid = true;
+                clearErrors();
+                var nameVal = nameInput.value.trim();
+                var emailVal = emailInput.value.trim();
+                var consent = getSelectedConsent();
+
+                if (!nameVal) {
+                    nameError.textContent = 'Name is required';
+                    nameInput.classList.add('lfg-error');
+                    valid = false;
+                } else if (nameVal.length < 2) {
+                    nameError.textContent = 'Please enter your full name';
+                    nameInput.classList.add('lfg-error');
+                    valid = false;
+                }
+                if (!emailVal) {
+                    emailError.textContent = 'Email is required';
+                    emailInput.classList.add('lfg-error');
+                    valid = false;
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+                    emailError.textContent = 'Invalid email address';
+                    emailInput.classList.add('lfg-error');
+                    valid = false;
+                }
+                if (!consent) {
+                    consentError.textContent = 'Please select an option';
+                    valid = false;
+                }
+                return valid;
+            }
+
+            var isSubmitting = false;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (isSubmitting) return;
+                if (!validate()) return;
+
+                // Anti-spam: reject if honeypot filled or submitted too fast (<3s)
+                if (honeypotInput && honeypotInput.value) return;
+                if (Date.now() - formLoadedAt < 3000) return;
+
+                if (!PETITION_LIST_ID) {
+                    submitErrorText.textContent = 'Petition configuration error. Please contact support.';
+                    submitError.style.display = 'block';
+                    return;
+                }
+
+                isSubmitting = true;
+                submitBtn.textContent = 'signing...';
+                submitBtn.disabled = true;
+
+                var consent = getSelectedConsent();
+                var listIds = [PETITION_LIST_ID];
+                if (consent === 'yes' && NEWSLETTER_LIST_ID) listIds.push(NEWSLETTER_LIST_ID);
+
+                var payload = new URLSearchParams({
+                    'Name': nameInput.value.trim(),
+                    'Email': emailInput.value.trim(),
+                    'List ID(s)': listIds.join(', ')
+                });
+
+                fetch(ZAPIER_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: payload.toString()
+                })
+                .then(function(res) {
+                    if (!res.ok) throw new Error('Failed');
+                    nameInput.value = '';
+                    emailInput.value = '';
+                    document.querySelectorAll('input[name="contactConsent"]').forEach(function(r) { r.checked = false; });
+                    warning.classList.remove('visible');
+                    if (petitionSignatureCount !== null) {
+                        petitionSignatureCount++;
+                        showProgress(petitionSignatureCount);
+                    }
+                    openPetitionModal();
+                })
+                .catch(function() {
+                    submitErrorText.textContent = 'Unable to submit your signature. Please try again.';
+                    submitError.style.display = 'block';
+                })
+                .finally(function() {
+                    isSubmitting = false;
+                    submitBtn.textContent = 'Sign';
+                    submitBtn.disabled = false;
+                });
+            });
+
+            // Consent radio warning
+            document.querySelectorAll('input[name="contactConsent"]').forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'no') {
+                        warning.classList.add('visible');
+                    } else {
+                        warning.classList.remove('visible');
+                    }
+                    consentError.textContent = '';
+                });
+            });
+
+            // Clear field errors on input
+            nameInput.addEventListener('input', function() {
+                nameError.textContent = '';
+                nameInput.classList.remove('lfg-error');
+            });
+            emailInput.addEventListener('input', function() {
+                emailError.textContent = '';
+                emailInput.classList.remove('lfg-error');
+            });
+
+            // Modal setup (once)
+            if (!petitionModalInitialized) {
+                petitionModalInitialized = true;
+                var modal = document.getElementById('lfgModal');
+                var modalClose = document.getElementById('lfgModalClose');
+                var copyBtn = document.getElementById('lfgCopyBtn');
+                var shareIG = document.getElementById('lfgShareIG');
+                var shareUrlInput = document.getElementById('lfgShareUrl');
+
+                modalClose.addEventListener('click', function() { modal.classList.remove('visible'); });
+                modal.addEventListener('click', function() { modal.classList.remove('visible'); });
+
+                copyBtn.addEventListener('click', function() {
+                    navigator.clipboard.writeText(shareUrlInput.value);
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
+                });
+
+                shareIG.addEventListener('click', function() {
+                    alert('Please copy the link and share it in your Instagram story or post, and tag @lookingforgrowthuk');
+                    navigator.clipboard.writeText(shareUrlInput.value);
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
+                });
+            }
+
+            function openPetitionModal() {
+                var url = getShareUrl();
+                var msg = 'Sign the Petition ' + url;
+                var shareUrlInput = document.getElementById('lfgShareUrl');
+                var shareFB = document.getElementById('lfgShareFB');
+                var shareX = document.getElementById('lfgShareX');
+                var modal = document.getElementById('lfgModal');
+
+                shareUrlInput.value = url;
+                shareFB.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '&quote=' + encodeURIComponent(msg) + '%20%40lookingforgrowth';
+                shareX.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(msg) + '%20%40lfg_uk';
+                modal.classList.add('visible');
+            }
+        }
+
+        function handleMoveCountry() {
+            stopDebtTicker();
+            currentDebt = DEBT_TARGET;
+            updateDebtDisplay();
+
+            const content = document.getElementById('gameContent');
+
+            content.innerHTML = `
+                <div class="emoji-large">✈️🇳🇱</div>
+                <h2 class="step-title">A New Beginning</h2>
+                <div class="result-box positive">
+                    <p>${escapeHtml(playerName)}. You found a job in the Netherlands. You have a decent salary, and you are moving in a month. You will enjoy better healthcare, a higher quality of life and better infrastructure.</p>
+                </div>
+                <div class="final-message">
+                    <h3>The U.K. has now lost another productive individual to another country.</h3>
+                    <p><span class="player-name">${escapeHtml(playerName)}</span>, they lied to you. They know the impact of each university and each degree, but they are covering it up. Help us STOP THE CONSPIRACY. FORCE the Government to RELEASE the records.</p>
+                </div>
+                ${getPetitionFormHTML()}
+                ${getUnemploymentBoxHTML()}
+                <button class="continue-btn" onclick="restartGame()" style="margin-top: 30px;">Play Again</button>
+            `;
+            initPetition();
+        }
+
+        function handleUniversalCredit() {
+            stopDebtTicker();
+            currentDebt = DEBT_TARGET;
+            updateDebtDisplay();
+
+            const content = document.getElementById('gameContent');
+
+            content.innerHTML = `
+                <div class="emoji-large">📉</div>
+                <h2 class="step-title">Universal Credit</h2>
+                <div class="result-box warning">
+                    <p>It won't be much, but it will be enough. <span class="player-name" style="color: white;">${escapeHtml(playerName)}</span>, you are now costing the taxpayer - but it is not your fault.</p>
+                </div>
+                <div class="final-message">
+                    <h3>The system failed you, it lied to you.</h3>
+                    <p><span class="player-name">${escapeHtml(playerName)}</span>, they lied to you. They know the impact of each university and each degree, but they are covering it up. Help us STOP THE CONSPIRACY. FORCE the Government to RELEASE the records.</p>
+                </div>
+                ${getPetitionFormHTML()}
+                ${getUnemploymentBoxHTML()}
+                <button class="continue-btn" onclick="restartGame()" style="margin-top: 30px;">Play Again</button>
+            `;
+            initPetition();
+        }
+
+        function restartGame() {
+            currentStep = 0;
+            optimism = 100;
+            triedApplyingAgain = false;
+
+            // Reset debt
+            stopDebtTicker();
+            currentDebt = 0;
+            interestAccrued = 0;
+
+            document.getElementById('optimismBarFill').style.width = '100%';
+            document.getElementById('optimismPercent').textContent = '100%';
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('introScreen').classList.remove('hidden');
+            document.getElementById('playerNameInput').value = '';
+            document.getElementById('startBtn').disabled = true;
+            updateDebtDisplay();
+        }
+    </script>
+</body>
+</html>
