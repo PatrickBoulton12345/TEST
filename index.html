@@ -1661,7 +1661,6 @@
                 var modal = document.getElementById('lfgModal');
                 var modalClose = document.getElementById('lfgModalClose');
                 var copyBtn = document.getElementById('lfgCopyBtn');
-                var shareIG = document.getElementById('lfgShareIG');
                 var shareUrlInput = document.getElementById('lfgShareUrl');
 
                 modalClose.addEventListener('click', function() { modal.classList.remove('visible'); });
@@ -1672,25 +1671,16 @@
                     copyBtn.textContent = 'Copied!';
                     setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
                 });
-
-                shareIG.addEventListener('click', function() {
-                    alert('Please copy the link and share it in your Instagram story or post, and tag @lookingforgrowthuk');
-                    navigator.clipboard.writeText(shareUrlInput.value);
-                    copyBtn.textContent = 'Copied!';
-                    setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
-                });
             }
 
             function openPetitionModal() {
                 var url = getShareUrl();
                 var msg = 'Sign the Petition ' + url;
                 var shareUrlInput = document.getElementById('lfgShareUrl');
-                var shareFB = document.getElementById('lfgShareFB');
                 var shareX = document.getElementById('lfgShareX');
                 var modal = document.getElementById('lfgModal');
 
                 shareUrlInput.value = url;
-                shareFB.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '&quote=' + encodeURIComponent(msg) + '%20%40lookingforgrowth';
                 shareX.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(msg) + '%20%40lfg_uk';
                 modal.classList.add('visible');
             }
