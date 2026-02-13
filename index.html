@@ -957,11 +957,11 @@
             </button>
             <h2>Thank You!</h2>
             <p>Thanks for signing the petition. Please share it to help spread the word and make change happen!</p>
-            <p class="lfg-share-title">Share the petition:</p>
+            <p class="lfg-share-title">Follow us on X:</p>
             <div class="lfg-share-buttons">
-                <a class="lfg-share-btn twitter" id="lfgShareX" href="#" target="_blank" rel="noopener noreferrer">
+                <a class="lfg-share-btn twitter" href="https://x.com/lfg_uk" target="_blank" rel="noopener noreferrer">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13.3174 10.7749L18.1677 5H17.0112L12.8193 10.0088L9.48911 5H5.5L10.5911 12.2311L5.5 18.3421H6.65645L11.0886 13.0662L14.6098 18.3421H18.5989L13.3171 10.7749H13.3174ZM11.6686 12.3839L11.1464 11.6366L7.0715 5.87016H8.92964L12.2012 10.5747L12.7234 11.322L17.0117 17.5091H15.1536L11.6686 12.3843V12.3839Z"/></svg>
-                    Share on X
+                    Follow us
                 </a>
             </div>
             <div class="lfg-copy-section">
@@ -1675,13 +1675,10 @@
 
             function openPetitionModal() {
                 var url = getShareUrl();
-                var msg = 'Sign the Petition ' + url;
                 var shareUrlInput = document.getElementById('lfgShareUrl');
-                var shareX = document.getElementById('lfgShareX');
                 var modal = document.getElementById('lfgModal');
 
                 shareUrlInput.value = url;
-                shareX.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(msg) + '%20%40lfg_uk';
                 modal.classList.add('visible');
             }
         }
